@@ -9,9 +9,8 @@ use serenity::{
     prelude::*,
 };
 use std::collections::HashSet;
-use tokio_postgres::{NoTls, Row};
 
-use commands::{docs::*, glossary::*, meta::*, owner::*};
+use commands::{meta::*, owner::*, homies::*};
 use serenity::model::channel::{Message, Reaction};
 use serenity::model::gateway::Activity;
 
@@ -35,7 +34,7 @@ impl EventHandler for Handler {
 
     async fn ready(&self, context: Context, ready: Ready) {
         context
-            .set_activity(Activity::playing("in postgres: \\h for help "))
+            .set_activity(Activity::playing("Shady Shit: !h for help "))
             .await;
         info!("Connected as {}", ready.user.name);
     }
@@ -46,20 +45,20 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(d, ex, g, h, pong, ping)]
+#[commands(h, ping, pong, saypogo, sayfriday, homie, notahomie, raid, brag, jump)]
 struct General;
 
 #[tokio::main]
 async fn main() {
     // This will load the environment variables located at `./.env`, relative to
     // the CWD. See `./.env.example` for an example on how to structure this.
-    kankyo::load().expect("Failed to load .env file");
+    // kankyo::load().expect("Failed to load .env file");
 
     // Initialize the logger to use environment variables.
     //
     // In this case, a good default is setting the environment variable
     // `RUST_LOG` to debug`.
-    env_logger::init();
+    // env_logger::init();
 
     let token = start_up().config.dis_token;
 
@@ -76,7 +75,7 @@ async fn main() {
     };
 
     let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners).prefix("\\"))
+        .configure(|c| c.owners(owners).prefix("!"))
         .group(&GENERAL_GROUP);
 
     let mut client = Client::new(&token)
@@ -90,36 +89,9 @@ async fn main() {
     }
 }
 
-async fn query(input: &str, is_example: bool) -> Vec<Row> {
-    let pgc = &start_up().config.pgc;
-
-    let (client, connection) = tokio_postgres::connect(pgc, NoTls)
-        .await
-        .expect("failed to connect to database");
-
-    tokio::spawn(async move {
-        if let Err(e) = connection.await {
-            eprintln!("connection error: {}", e);
-        }
-    });
-
-    client
-        .query(
-            "SELECT * FROM query_docs($1, $2) LIMIT $3",
-            &[
-                &input,
-                &is_example,
-                if is_example { &(2 as i64) } else { &(5 as i64) },
-            ],
-        )
-        .await
-        .expect("query failed")
-}
-
 #[derive(Deserialize)]
 struct Properties {
     dis_token: String,
-    pgc: String,
 }
 
 #[derive(Deserialize)]
@@ -128,7 +100,7 @@ pub struct Config {
 }
 
 fn start_up() -> Config {
-    let path = "/Users/dselph/Config.toml";
+    let path = "C:\\Users\\David\\CLionProjects\\shadybot\\config.toml";
     let config: Config =
         toml::from_str(&std::fs::read_to_string(path).expect("Reading to string from path failed"))
             .expect("Failed to parse string to toml");
