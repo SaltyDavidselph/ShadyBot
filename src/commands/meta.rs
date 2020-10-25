@@ -20,6 +20,6 @@ fn help() -> &'static str {
     !notahomie will take away your homie status \n\
     !raid This will tag @theHomies that there is a raid happening \n\
     !brag Tag the Homies to brag to them! \n\
-    !jump Tag that we are jumping into the Raid \n\
+    !jump/jumping Tag that we are jumping into the Raid \n\
     "
 }

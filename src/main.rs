@@ -45,7 +45,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(h, ping, pong, saypogo, sayfriday, homie, notahomie, raid, brag, jump)]
+#[commands(h, ping, pong, saypogo, sayfriday, homie, notahomie, raid, brag, jump, jumping, hump)]
 struct General;
 
 #[tokio::main]

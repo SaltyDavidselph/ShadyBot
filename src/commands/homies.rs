@@ -8,7 +8,13 @@ async fn homie(ctx: &Context, msg: &Message) -> CommandResult {
     let guild_id = u64::from(msg.guild_id.expect("No Guild ID found"));
     let user_id= u64::from(msg.author.id);
     let role_id =  741418770039308356;
-    let saying = format!("{} is now a homie and ready to raid", msg.author);
+    let saying;
+    if msg.author.has_role(&ctx.http,msg.guild(&ctx.cache).await.expect("No guild in the cache"), role_id)
+    {
+        saying = format!("{} is already homie and wasting my time", msg.author);
+    } else {
+        saying = format!("{} is now a homie and ready to raid", msg.author);
+    }
     msg.channel_id.say(&ctx.http, saying).await?;
     ctx.http.add_member_role(guild_id, user_id, role_id).await?;
     Ok(())
@@ -49,6 +55,25 @@ async fn jump(ctx: &Context, msg: &Message) -> CommandResult {
     let role_id =  "741418770039308356";
     let gif_url = "https://tenor.com/view/jump-water-fail-deep-gif-4858815";
     let saying = format!("{}'s raid is jumping in <@&{}> \n {}", msg.author, role_id, gif_url);
+    msg.channel_id.say(&ctx.http, saying).await?;
+    Ok(())
+}
+
+#[command]
+async fn jumping(ctx: &Context, msg: &Message) -> CommandResult {
+    //todo
+    // make this read the raid post if it has reacts tag them
+    let role_id =  "741418770039308356";
+    let gif_url = "https://tenor.com/view/trampoline-jump-gomez-addamsfamily-gif-6004087";
+    let saying = format!("{}'s raid is jumping in <@&{}> \n {}", msg.author, role_id, gif_url);
+    msg.channel_id.say(&ctx.http, saying).await?;
+    Ok(())
+}
+
+#[command]
+async fn hump(ctx: &Context, msg: &Message) -> CommandResult {
+    let gif_url = "https://tenor.com/view/funny-dance-gif-5144812";
+    let saying = format!("{}", gif_url);
     msg.channel_id.say(&ctx.http, saying).await?;
     Ok(())
 }
