@@ -1,5 +1,5 @@
 [package]
-name = "translate"
+name = "shadybot"
 version = "0.1.0"
 authors = ["David"]
 edition = "2018"

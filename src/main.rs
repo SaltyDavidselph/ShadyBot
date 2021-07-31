@@ -13,24 +13,34 @@ use std::collections::HashSet;
 use commands::{meta::*, owner::*, homies::*};
 use serenity::model::channel::{Message, Reaction};
 use serenity::model::gateway::Activity;
-
+use serenity::model::*;
 use serde::*;
+use serenity::model::channel::ReactionType::*;
 
 struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn message(&self, _ctx: Context, new_message: Message) {
-        if new_message.author.bot {
-            //todo save the bots message ids to be compared to reactions
-        }
+    async fn message(&self, _ctx: Context, _new_message: Message) {
+
     }
 
-    async fn reaction_add(&self, _ctx: Context, add_reaction: Reaction) {
-        let _test = add_reaction.user_id.expect("No user ID");
-        //todo Save reacts into a table: UserID, React type, Message ID
-        //todo make sure it is not the bot reacting to itself
-    }
+    // async fn reaction_add(&self, ctx: Context, add_reaction: Reaction) {
+    //     let reactor = ctx.cache.user(add_reaction.user_id.expect("no User Id Found")).await.expect("no User found");
+    //     let guild = &ctx.cache.guild(add_reaction.guild_id.unwrap()).await.expect("Guild not found");
+    //     let brave_cap =  guild.role_by_name("Brave and Mighty Captian").expect("Brave and mighty Captian Not found");
+    //     //check if the reator is the brave Captian
+    //     let check = reactor.has_role(&ctx, u64::from(guild.id),u64::from(brave_cap.id)).await;
+    //     if check.expect("")
+    //     //reactor.has_role(ctx, add_reaction.guild_id,brave_cap).await?
+    //     {
+    //         //check if the emoji is salt
+    //         if add_reaction.emoji.as_data().eq(":salt:"){
+    //
+    //             // message.react(&ctx, Unicode(String::from(":salt:")));
+    //         }
+    //     }
+    // }
 
     async fn ready(&self, context: Context, ready: Ready) {
         context
@@ -45,7 +55,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(h, ping, pong, saypogo, sayfriday, homie, notahomie, raid, brag, jump, jumping, hump)]
+#[commands(h, ping, pong, say, saypogo, sayfriday, homie, notahomie, raid, brag, jump, jumping, hump)]
 struct General;
 
 #[tokio::main]

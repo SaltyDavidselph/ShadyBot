@@ -9,11 +9,17 @@ async fn homie(ctx: &Context, msg: &Message) -> CommandResult {
     let user_id= u64::from(msg.author.id);
     let role_id =  741418770039308356;
     let saying;
-    if msg.author.has_role(&ctx.http,msg.guild(&ctx.cache).await.expect("No guild in the cache"), role_id)
-    {
-        saying = format!("{} is already homie and wasting my time", msg.author);
-    } else {
-        saying = format!("{} is now a homie and ready to raid", msg.author);
+    let test = msg.author.has_role(&ctx.http,guild_id, role_id).await;
+    match test {
+        Ok(has_role) => {
+            if has_role {
+                saying = format!("{} is already homie and wasting my time", msg.author);
+            }
+            else {
+                saying = format!("{} is now a homie and ready to raid", msg.author);
+            }
+        },
+        Err(..) => {saying = format!("Shit borked Yo")}
     }
     msg.channel_id.say(&ctx.http, saying).await?;
     ctx.http.add_member_role(guild_id, user_id, role_id).await?;
@@ -22,13 +28,19 @@ async fn homie(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 async fn notahomie(ctx: &Context, msg: &Message) -> CommandResult {
-    //todo make chec if they are already not a homie and shame them for not being one in the first place
     let guild_id = u64::from(msg.guild_id.expect("No Guild ID found"));
     let user_id= u64::from(msg.author.id);
     let role_id =  741418770039308356;
-    let saying = format!("{} is no longer a homie and is totally lame!", msg.author);
+    let saying ;
+    let has_role =  msg.author.has_role(&ctx, guild_id, role_id).await?;
+    if has_role {
+        saying = format!("{} is no longer a homie and totally Lame ", msg.author);
+        ctx.http.remove_member_role(guild_id, user_id, role_id).await?;
+    }
+    else {
+        saying = format!("{} was not a homie to begin with... what a loser... ", msg.author);
+    }
     msg.channel_id.say(&ctx.http, saying).await?;
-    ctx.http.remove_member_role(guild_id, user_id, role_id).await?;
     Ok(())
 }
 
@@ -73,6 +85,14 @@ async fn jumping(ctx: &Context, msg: &Message) -> CommandResult {
 #[command]
 async fn hump(ctx: &Context, msg: &Message) -> CommandResult {
     let gif_url = "https://tenor.com/view/funny-dance-gif-5144812";
+    let saying = format!("{}", gif_url);
+    msg.channel_id.say(&ctx.http, saying).await?;
+    Ok(())
+}
+
+#[command]
+async fn lucky(ctx: &Context, msg: &Message) -> CommandResult {
+    let gif_url = "https://tenor.com/view/lucky-napoleondynamite-luck-gif-7694851";
     let saying = format!("{}", gif_url);
     msg.channel_id.say(&ctx.http, saying).await?;
     Ok(())
