@@ -11,36 +11,14 @@ use serenity::{
 use std::collections::HashSet;
 
 use commands::{meta::*, owner::*, homies::*};
-use serenity::model::channel::{Message, Reaction};
+use serenity::model::channel::Message ;
 use serenity::model::gateway::Activity;
-use serenity::model::*;
 use serde::*;
-use serenity::model::channel::ReactionType::*;
 
 struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn message(&self, _ctx: Context, _new_message: Message) {
-
-    }
-
-    // async fn reaction_add(&self, ctx: Context, add_reaction: Reaction) {
-    //     let reactor = ctx.cache.user(add_reaction.user_id.expect("no User Id Found")).await.expect("no User found");
-    //     let guild = &ctx.cache.guild(add_reaction.guild_id.unwrap()).await.expect("Guild not found");
-    //     let brave_cap =  guild.role_by_name("Brave and Mighty Captian").expect("Brave and mighty Captian Not found");
-    //     //check if the reator is the brave Captian
-    //     let check = reactor.has_role(&ctx, u64::from(guild.id),u64::from(brave_cap.id)).await;
-    //     if check.expect("")
-    //     //reactor.has_role(ctx, add_reaction.guild_id,brave_cap).await?
-    //     {
-    //         //check if the emoji is salt
-    //         if add_reaction.emoji.as_data().eq(":salt:"){
-    //
-    //             // message.react(&ctx, Unicode(String::from(":salt:")));
-    //         }
-    //     }
-    // }
 
     async fn ready(&self, context: Context, ready: Ready) {
         context
@@ -55,7 +33,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(h, ping, pong, say, saypogo, sayfriday, homie, notahomie, raid, brag, jump, jumping, hump)]
+#[commands(h, ping, pong, saypogo, sayfriday, homie, notahomie, raid, brag, jump, jumping, hump)]
 struct General;
 
 #[tokio::main]
@@ -72,7 +50,7 @@ async fn main() {
 
     let token = start_up().config.dis_token;
 
-    let http = Http::new_with_token(&token);
+    let http = Http::new(&token);
 
     let (owners, _bot_id) = match http.get_current_application_info().await {
         Ok(info) => {
@@ -88,7 +66,11 @@ async fn main() {
         .configure(|c| c.owners(owners).prefix("!"))
         .group(&GENERAL_GROUP);
 
-    let mut client = Client::new(&token)
+    let intents = GatewayIntents::GUILD_MESSAGES
+        | GatewayIntents::DIRECT_MESSAGES
+        | GatewayIntents::MESSAGE_CONTENT;
+
+    let mut client = Client::builder(&token,intents )
         .framework(framework)
         .event_handler(Handler)
         .await
